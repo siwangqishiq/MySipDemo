@@ -1,0 +1,3 @@
+rootProject.name='MySipDemo'
+include ':app'
+include ':siplib'
