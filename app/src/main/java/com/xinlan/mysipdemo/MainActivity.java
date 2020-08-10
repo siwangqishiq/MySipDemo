@@ -10,7 +10,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.xinlan.mysipdemo.sip.NetUtils;
 import com.xinlan.mysipdemo.sip.SipApp;
+
+import org.pjsip.pjsua2.AccountConfig;
 
 public class MainActivity extends AppCompatActivity {
     private EditText mAccountText;
@@ -26,7 +29,16 @@ public class MainActivity extends AppCompatActivity {
 
         mAccountText = findViewById(R.id.account_text);
         mPwdText = findViewById(R.id.password_text);
-        //requestSipPermission();
+        findViewById(R.id.login_btn).setOnClickListener((v)->{
+            sipLogin();
+        });
+    }
+
+    private void sipLogin(){
+        String account = mAccountText.getText().toString().trim();
+        String pwd = mPwdText.getText().toString().trim();
+
+        SipApp.getInstance().sipLogin(account , pwd , NetUtils.getIpAddress(this));
     }
 
     @Override

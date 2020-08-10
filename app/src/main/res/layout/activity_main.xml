@@ -9,6 +9,7 @@
 
     <EditText
         android:id="@+id/account_text"
+        android:text="8004"
         android:hint="用户名"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,6 +17,7 @@
 
     <EditText
         android:id="@+id/password_text"
+        android:text="Better2@19"
         android:hint="密码"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

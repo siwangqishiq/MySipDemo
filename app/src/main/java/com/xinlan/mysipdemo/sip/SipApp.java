@@ -1,5 +1,9 @@
 package com.xinlan.mysipdemo.sip;
 
+import org.pjsip.pjsua2.Account;
+import org.pjsip.pjsua2.AccountConfig;
+import org.pjsip.pjsua2.AuthCredInfo;
+import org.pjsip.pjsua2.AuthCredInfoVector;
 import org.pjsip.pjsua2.Endpoint;
 import org.pjsip.pjsua2.EpConfig;
 import org.pjsip.pjsua2.LogConfig;
@@ -26,6 +30,10 @@ public class SipApp {
         System.loadLibrary("pjsua2");
         System.out.println("Library loaded");
     }
+
+    public static final String SIP_PROTOCOL = "sip:";
+    public static final String SIP_SERVER = "115.239.133.189:5068";
+    public static final String SIP_TRANSPORT_TCP = ";transport=tcp";
 
     public static final int SIP_PORT = 5068;
     private final int LOG_LEVEL = 4;
@@ -58,6 +66,8 @@ public class SipApp {
     private Endpoint endPoint = new Endpoint();
     private EpConfig epConfig = new EpConfig();
     private TransportConfig sipTpConfig = new TransportConfig();
+
+    private MyAccount mMyAccount;
 
     private MyLogWriter logWriter = new MyLogWriter();
 
@@ -112,6 +122,43 @@ public class SipApp {
             endPoint.libStart();
         } catch (Exception e) {
             return;
+        }
+    }
+
+    /**
+     *  发起注册 register
+     * @param account
+     * @param pwd
+     */
+    public void sipLogin(String account , String pwd , String ipAddress){
+        AccountConfig accountConfig = new AccountConfig();
+        String accId = SIP_PROTOCOL+account+"@"+ipAddress+":"+SIP_PORT;
+        String registar = SIP_PROTOCOL + SIP_SERVER +SIP_TRANSPORT_TCP;
+        String username = account;
+
+        System.out.println("login info: ");
+        System.out.println("id               :  " + accId);
+        System.out.println("registar     :  " + registar);
+        System.out.println("username :  " + username);
+        System.out.println("pwd            :  " + pwd);
+
+        accountConfig.setIdUri(accId);
+        accountConfig.getRegConfig().setRegistrarUri(registar);
+        AuthCredInfoVector creds = accountConfig.getSipConfig().getAuthCreds();creds.clear();
+        if (username.length() != 0) {
+            creds.add(new AuthCredInfo("Digest", "*", username, 0, pwd));
+        }
+        accountConfig.getNatConfig().setIceEnabled(true); // Enable ICE
+
+        try{
+            if(mMyAccount == null){
+                mMyAccount = new MyAccount(accountConfig);
+                mMyAccount.create(accountConfig);
+            }else{
+                mMyAccount.modify(accountConfig);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
